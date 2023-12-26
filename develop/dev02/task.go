@@ -25,23 +25,58 @@ import (
 Функция должна проходить все тесты. Код должен проходить проверки go vet и golint.
 */
 
-func unpack(s string) (string, error) {
+// unpack - распаковывает строку содержащую повторяющиеся символы
+func unpack(s []rune) string {
+	// Переменная для записи распакованной строки.
+	// Планируется частая конкатенация, поэтому используем string builder
 	var result strings.Builder
 
+	// Если потребуется распокавать символ с многозначным основанием, то
+	// будем собирать число используя переменную temp
+	var temp string
+
 	for i, char := range s {
+		// Проверяем является ли char числом
 		if unicode.IsDigit(char) {
-			count, _ := strconv.Atoi(string(char))
-			result.WriteString(strings.Repeat(string(s[i-1]), count-1))
+			// Если char - число, то конкатенируем его в temp
+			// Большое количество конкатенаций не планируется,
+			// поэтому обычное += будет оптимальным решением
+			temp += string(char)
+
+			// Если следующий символ не цифра, то преобразуем temp
+			// в число и распаковываем строку
+			if !unicode.IsDigit(s[i+1]) {
+				// Преобразуем строку temp в число
+				count, _ := strconv.Atoi(temp)
+
+				// т.к. temp может состоять только из ascii цифр которые
+				// в ascii таблице занимают 1 байт, len(temp) всегда будет
+				// возвращать длину строки temp совпадающую с реальным
+				// количеством символов в строке, поэтому дополнительных
+				// операций не требуется
+				result.WriteString(strings.Repeat(string(s[i-len(temp)]), count-1))
+
+				// Обнуляем temp
+				temp = ""
+			}
 		} else {
+			// Если char не оказался числом, тогда просто записываем его
+			// в результат (распакованную строку)
 			result.WriteString(string(char))
 		}
 	}
 
-	return result.String(), nil
+	// Возвращаем распакованную строку
+	return result.String()
 }
 
 func main() {
-	s := "a4bc2d5e"
-	result, _ := unpack(s)
+	// Входные данные
+	s := []rune("г10bc2г5e")
+
+	// Распаковываем строку
+	result := unpack(s)
+
+	// Выводим результат
 	fmt.Println(result)
 }
