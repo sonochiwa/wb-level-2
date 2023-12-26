@@ -22,11 +22,18 @@ import (
 
 func main() {
 	ntpTime, err := ntp.Time("0.beevik-ntp.pool.ntp.org")
+
 	if err != nil {
-		os.Stderr.WriteString(err.Error()) // Печать ошибки в STDERR
-		os.Exit(1)                         // Ненулевой код выхода в OS
+		// Печать ошибки в STDERR
+		os.Stderr.WriteString(err.Error())
+
+		// Ненулевой код выхода в OS
+		os.Exit(1)
 	}
 
-	fmt.Println(time.Now().Format(time.RFC3339)) // Вывод текущего времени
-	fmt.Println(ntpTime.Format(time.RFC3339))    // Вывод точного времени
+	// Вывод текущего времени
+	fmt.Println(time.Now().Format(time.RFC3339))
+
+	// Вывод точного времени
+	fmt.Println(ntpTime.Format(time.RFC3339))
 }
