@@ -45,7 +45,7 @@ func unpack(s []rune) string {
 				// Распаковываем и записываем в result
 				result.WriteString(strings.Repeat(string(s[i-1]), count-1))
 			} else {
-				// Если s[i] не число, и не escape последовательность, тогда пишем его в result
+				// Если s[i] не число и не escape последовательность, тогда пишем его в result
 				result.WriteString(string(s[i]))
 			}
 		}
