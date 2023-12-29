@@ -7,7 +7,7 @@ import (
 
 func TestUnpack(t *testing.T) {
 	testCases := []struct {
-		result   string
+		input    string
 		expected string
 		hasError bool
 	}{
@@ -26,10 +26,10 @@ func TestUnpack(t *testing.T) {
 
 	for i, tc := range testCases {
 		t.Run(strconv.Itoa(i+1), func(t *testing.T) {
-			result, err := unpack(tc.result)
+			result, err := unpack(tc.input)
 
 			if result != tc.expected {
-				t.Errorf("Test case %d: expected %s, got %s", i+1, tc.expected, result)
+				t.Errorf("Test case %d: expected \"%s\", got %s", i+1, tc.expected, result)
 			}
 
 			if tc.hasError && err == nil || !tc.hasError && err != nil {
