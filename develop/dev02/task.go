@@ -32,9 +32,10 @@ func unpack(s []rune) string {
 
 	// Итерируем по массиву рун, для поддержки unicode символов
 	for i := 0; i < len(s); i++ {
-		// Если s[i] не экранирующий символ
+		// Если s[i] escape последовательность
 		if s[i] == '\\' {
 			result.WriteString(string(s[i+1]))
+			// Инкрементируем счетчик i, чтобы пропустить следующий шаг
 			i++
 		} else {
 			// Если s[i] число, то
@@ -44,7 +45,7 @@ func unpack(s []rune) string {
 				// Распаковываем и записываем в result
 				result.WriteString(strings.Repeat(string(s[i-1]), count-1))
 			} else {
-				// Если s[i] не число, тогда пишем его в result
+				// Если s[i] не число, и не escape последовательность, тогда пишем его в result
 				result.WriteString(string(s[i]))
 			}
 		}
