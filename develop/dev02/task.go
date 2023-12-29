@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -26,12 +27,27 @@ import (
 */
 
 // Метод unpack распаковывает строку, содержащую повторяющиеся символы
-func unpack(s []rune) string {
+func unpack(data string) (string, error) {
+	s := []rune(data)
+
 	// Планируется частая конкатенация, поэтому используем string builder
 	var result strings.Builder
 
 	// Итерируем по массиву рун, для поддержки unicode символов
 	for i := 0; i < len(s); i++ {
+
+		if s[len(s)-2] != '\\' && s[len(s)-1] == '\\' {
+			return "", errors.New("некорректная строка")
+		}
+
+		if unicode.IsDigit(s[i]) && unicode.IsDigit(s[i+1]) {
+			return "", errors.New("некорректная строка")
+		}
+
+		if unicode.IsDigit(s[0]) {
+			return "", errors.New("некорректная строка")
+		}
+
 		// Если s[i] escape последовательность
 		if s[i] == '\\' {
 			result.WriteString(string(s[i+1]))
@@ -52,15 +68,19 @@ func unpack(s []rune) string {
 	}
 
 	// Возвращаем распакованную строку
-	return result.String()
+	return result.String(), nil
 }
 
 func main() {
 	// Входные данные
-	s := []rune("qwe\\4\\5")
+	s := "qwe\\\\5"
 
 	// Распаковка строки
-	result := unpack(s)
+	result, err := unpack(s)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	// Вывод результата
 	fmt.Println(result)
