@@ -35,16 +35,11 @@ func unpack(data string) (string, error) {
 
 	// Итерируем по массиву рун, для поддержки unicode символов
 	for i := 0; i < len(s); i++ {
+		if unicode.IsDigit(s[0]) {
+			return "", errors.New("некорректная строка")
+		}
 
 		if s[len(s)-2] != '\\' && s[len(s)-1] == '\\' {
-			return "", errors.New("некорректная строка")
-		}
-
-		if unicode.IsDigit(s[i]) && unicode.IsDigit(s[i+1]) {
-			return "", errors.New("некорректная строка")
-		}
-
-		if unicode.IsDigit(s[0]) {
 			return "", errors.New("некорректная строка")
 		}
 
@@ -73,7 +68,7 @@ func unpack(data string) (string, error) {
 
 func main() {
 	// Входные данные
-	s := "qwe\\\\5"
+	s := "45"
 
 	// Распаковка строки
 	result, err := unpack(s)
