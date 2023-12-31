@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -51,7 +52,7 @@ var months = []string{
 }
 
 var si = map[string]int{
-	"k": 3,
+	"K": 3,
 	"M": 6,
 	"G": 9,
 	"T": 12,
@@ -95,18 +96,30 @@ func sortFile(args []string) {
 
 	filePath = args[0]
 	data, err := readFile(filePath)
-	copyData := make([][]string, len(data), cap(data))
-	if cFlag {
-		copy(copyData, data)
-	}
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	if kFlag == 0 || kFlag > len(data[0]) {
+	if kFlag == 0 {
 		fmt.Println("Invalid argument for -k")
 		return
+	}
+
+	if kFlag > 0 {
+		for i := 0; i < len(data); i++ {
+			if kFlag > len(data[i]) {
+				fmt.Println("Invalid argument for -k")
+
+				printData(data)
+				return
+			}
+		}
+	}
+
+	copyData := make([][]string, len(data), cap(data))
+	if cFlag {
+		copy(copyData, data)
 	}
 
 	if nFlag && mFlag {
@@ -177,25 +190,25 @@ func humanNumericSort(data [][]string) [][]string {
 	}
 
 	// Сортируем сокращенные числа
-	for i := 0; i < len(data)-1; i++ {
-		for j := 0; j < len(data)-1; j++ {
-			number1 := data[j][kFlag-1][:len(data[j][kFlag-1])]
-			tail1 := data[j][kFlag-1][len(data[j][kFlag-1]):]
+	for i := 0; i < len(shortening)-1; i++ {
+		for j := 0; j < len(shortening)-1; j++ {
+			number1 := shortening[j][kFlag-1][:len(shortening[j][kFlag-1])-1]
+			tail1 := shortening[j][kFlag-1][len(shortening[j][kFlag-1])-1:]
+			tail1res := si[tail1]
 
 			x1, _ := strconv.Atoi(number1)
-			y1, _ := strconv.Atoi(tail1)
 
-			number2 := data[j+1][kFlag-1][:len(data[j+1][kFlag-1])]
-			tail2 := data[j+1][kFlag-1][len(data[j+1][kFlag-1]):]
+			number2 := shortening[j+1][kFlag-1][:len(shortening[j+1][kFlag-1])-1]
+			tail2 := shortening[j+1][kFlag-1][len(shortening[j+1][kFlag-1])-1:]
+			tail2res := si[tail2]
 
 			x2, _ := strconv.Atoi(number2)
-			y2, _ := strconv.Atoi(tail2)
 
-			value1 := x1 * y1 * 10
-			value2 := x2 * y2 * 10
+			value1 := x1 * int(math.Pow(10, float64(tail1res)))
+			value2 := x2 * int(math.Pow(10, float64(tail2res)))
 
 			if value1 > value2 {
-				data[j], data[j+1] = data[j+1], data[j]
+				shortening[j], shortening[j+1] = shortening[j+1], shortening[j]
 			}
 		}
 	}
@@ -234,11 +247,36 @@ func readFile(filePath string) ([][]string, error) {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		parsedData := strings.SplitN(scanner.Text(), " ", 2)
+		// Кастомный сплит строки, чтобы оставались висячие пробелы
+		parsedData := splitString(scanner.Text())
 		data = append(data, parsedData)
 	}
-
 	return data, nil
+}
+
+func splitString(input string) []string {
+	var result []string
+	var currentWord string
+
+	for i, char := range input {
+		if char != ' ' {
+			currentWord += string(char)
+		} else {
+			if input[i-1] == ' ' {
+				currentWord += string(char)
+			} else {
+				result = append(result, currentWord)
+				currentWord = ""
+			}
+		}
+	}
+
+	// Добавляем последнее слово, если оно есть
+	if currentWord != "" {
+		result = append(result, currentWord)
+	}
+
+	return result
 }
 
 // TODO: заменить на quickSort
@@ -333,7 +371,6 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&bFlag, "ignore-leading-blanks", "b", false, "")
 	rootCmd.PersistentFlags().BoolVarP(&cFlag, "check", "c", false, "")
 	rootCmd.PersistentFlags().BoolVarP(&hFlag, "human-numeric-sort", "H", false, "")
-
 }
 
 func main() {

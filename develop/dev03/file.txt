@@ -1,6 +1,4 @@
-1500 january
-1k february
-2000 march
-2k april
-0.5M september
-1M october
+1 4
+2 3K
+3 2K
+4 1M
