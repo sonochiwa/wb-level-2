@@ -96,7 +96,7 @@ func sortFile(args []string) {
 	}
 
 	filePath = args[0]
-	data, err := readFile(filePath)
+	data, err := parseData(filePath)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -111,8 +111,6 @@ func sortFile(args []string) {
 		for i := 0; i < len(data); i++ {
 			if kFlag > len(data[i]) {
 				fmt.Println("Invalid argument for -k")
-
-				printData(data)
 				return
 			}
 		}
@@ -157,12 +155,11 @@ func sortFile(args []string) {
 	}
 
 	if cFlag {
-		diff, err := compare(data, copyData)
+		err := compare(data, copyData)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		printData(diff)
 	} else {
 		printData(data)
 	}
@@ -231,19 +228,19 @@ func humanNumericSort(data [][]string) [][]string {
 	return result
 }
 
-func compare(afterSortData [][]string, beforeSortData [][]string) ([][]string, error) {
+func compare(afterSortData [][]string, beforeSortData [][]string) error {
 	for i := 0; i < len(afterSortData); i++ {
 		for j := 0; j < len(afterSortData[i]); j++ {
 			if afterSortData[i][j] != beforeSortData[i][j] {
-				return nil, errors.New(fmt.Sprint("disorder:", strings.Join(afterSortData[i], " ")))
+				return errors.New(fmt.Sprint("disorder:", afterSortData[i][j]))
 			}
 		}
 	}
 
-	return afterSortData, nil
+	return nil
 }
 
-func readFile(filePath string) ([][]string, error) {
+func parseData(filePath string) ([][]string, error) {
 	var data [][]string
 
 	file, err := os.Open(filePath)
