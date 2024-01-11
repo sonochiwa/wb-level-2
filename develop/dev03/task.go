@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math"
 	"os"
@@ -156,7 +157,12 @@ func sortFile(args []string) {
 	}
 
 	if cFlag {
-		compare(data, copyData)
+		diff, err := compare(data, copyData)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		printData(diff)
 	} else {
 		printData(data)
 	}
@@ -225,15 +231,16 @@ func humanNumericSort(data [][]string) [][]string {
 	return result
 }
 
-func compare(afterSortData [][]string, beforeSortData [][]string) {
+func compare(afterSortData [][]string, beforeSortData [][]string) ([][]string, error) {
 	for i := 0; i < len(afterSortData); i++ {
 		for j := 0; j < len(afterSortData[i]); j++ {
 			if afterSortData[i][j] != beforeSortData[i][j] {
-				fmt.Println("disorder:", strings.Join(afterSortData[i], " "))
-				return
+				return nil, errors.New(fmt.Sprint("disorder:", strings.Join(afterSortData[i], " ")))
 			}
 		}
 	}
+
+	return afterSortData, nil
 }
 
 func readFile(filePath string) ([][]string, error) {
