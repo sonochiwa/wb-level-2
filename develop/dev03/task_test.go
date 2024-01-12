@@ -49,11 +49,6 @@ func TestDedupeData(t *testing.T) {
 			input:    [][]string{{"multi"}, {"multi"}, {"multi"}},
 			expected: [][]string{{"multi"}},
 		},
-		//{
-		//	name:     "empty input",
-		//	input:    [][]string{},
-		//	expected: [][]string{},
-		//},
 	}
 
 	for _, tc := range tests {
