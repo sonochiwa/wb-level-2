@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"sort"
+	"slices"
 	"strings"
 )
 
@@ -28,6 +28,7 @@ import (
 func findAnagrams(words []string) map[string][]string {
 	anagrams := make(map[string][]string)
 	newAnagrams := make(map[string][]string)
+
 	for _, word := range words {
 		wordToLower := strings.ToLower(word) // Приводим слово к нижнему регистру
 		sorted := sortWord(wordToLower)
@@ -40,7 +41,9 @@ func findAnagrams(words []string) map[string][]string {
 
 	// Чтобы ключом в словаре было первое встретившееся слово из множества
 	for key := range anagrams {
-		newAnagrams[anagrams[key][0]] = anagrams[key]
+		if len(anagrams[key]) > 1 {
+			newAnagrams[anagrams[key][0]] = anagrams[key]
+		}
 	}
 
 	return newAnagrams
@@ -48,9 +51,7 @@ func findAnagrams(words []string) map[string][]string {
 
 func sortWord(word string) string {
 	runes := []rune(word)
-	sort.Slice(runes, func(i, j int) bool {
-		return runes[i] < runes[j]
-	})
+	slices.Sort(runes)
 	return string(runes)
 }
 
