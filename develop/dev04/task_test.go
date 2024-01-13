@@ -28,3 +28,23 @@ func TestFindAnagrams(t *testing.T) {
 		}
 	})
 }
+
+func TestSortWord(t *testing.T) {
+	test := struct {
+		name     string
+		input    string
+		expected string
+	}{
+		name:     "test sort words",
+		input:    "пятак",
+		expected: "акптя",
+	}
+
+	t.Run(test.name, func(t *testing.T) {
+		result := sortWord(test.input)
+		if test.expected != result {
+			t.Errorf("Test case %s: expected \"%s\", got \"%s\"", test.name, test.expected, result)
+			return
+		}
+	})
+}
