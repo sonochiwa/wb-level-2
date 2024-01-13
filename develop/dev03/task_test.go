@@ -7,27 +7,22 @@ import (
 	"testing"
 )
 
-// Test sort algorithm
-//func TestSortStrings(t *testing.T) {
-//
-//}
+func TestSortStrings(t *testing.T) {
 
-// Test -k flag
-//func TestSetColumn(t *testing.T) {
-//
-//}
+}
 
-// Test -n flag
-//func TestSortNumbers(t *testing.T) {
-//
-//}
+func TestSetColumn(t *testing.T) {
 
-// Test -r flag
-//func TestReverseData(t *testing.T) {
-//
-//}
+}
 
-// Test -u flag
+func TestSortNumbers(t *testing.T) {
+
+}
+
+func TestReverseData(t *testing.T) {
+
+}
+
 func TestDedupeData(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -63,7 +58,6 @@ func TestDedupeData(t *testing.T) {
 	}
 }
 
-// Test -M flag
 func TestSortMonths(t *testing.T) {
 	test := struct {
 		name     string
@@ -97,12 +91,10 @@ func TestSortMonths(t *testing.T) {
 	})
 }
 
-// Test -b flag
-//func TestTrimSpace(t *testing.T) {
-//
-//}
+func TestTrimSpace(t *testing.T) {
 
-// Test -c flag
+}
+
 func TestCompare(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -138,7 +130,6 @@ func TestCompare(t *testing.T) {
 	}
 }
 
-// Test -H flag
 func TestHumanNumericSort(t *testing.T) {
 	test := struct {
 		name     string
