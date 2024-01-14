@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -37,6 +38,7 @@ var (
 	countFlag      bool
 	ignoreCaseFlag bool
 	invertFlag     bool
+	fixedFlag      bool
 	lineNumFlag    bool
 )
 
@@ -127,10 +129,23 @@ func getIndexes(pattern string, data []string) map[int]bool {
 			normalizePattern = strings.ToLower(pattern)
 		}
 
-		if strings.Contains(normalizedData, normalizePattern) {
-			indexes[i] = true
+		if fixedFlag {
+			if strings.Contains(normalizedData, normalizePattern) {
+				indexes[i] = true
+			} else {
+				indexes[i] = false
+			}
 		} else {
-			indexes[i] = false
+			re, err := regexp.Compile(normalizePattern)
+			if err != nil {
+				fmt.Println(err)
+				return nil
+			}
+			if strings.Contains(normalizedData, re.String()) {
+				indexes[i] = true
+			} else {
+				indexes[i] = false
+			}
 		}
 	}
 
@@ -246,7 +261,8 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&countFlag, "4", "c", false, "")
 	rootCmd.PersistentFlags().BoolVarP(&ignoreCaseFlag, "5", "i", false, "")
 	rootCmd.PersistentFlags().BoolVarP(&invertFlag, "6", "v", false, "")
-	rootCmd.PersistentFlags().BoolVarP(&lineNumFlag, "7", "n", false, "")
+	rootCmd.PersistentFlags().BoolVarP(&fixedFlag, "7", "f", false, "")
+	rootCmd.PersistentFlags().BoolVarP(&lineNumFlag, "8", "n", false, "")
 }
 
 func main() {
