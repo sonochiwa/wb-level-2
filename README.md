@@ -20,7 +20,7 @@
 ✅ Or channel  
 ✅ Взаимодействие с ОС  
 ✅ Утилита wget  
-❌ Утилита telnet  
+✅ Утилита telnet  
 ❌ HTTP server
 
 ## Listing [0/7]
