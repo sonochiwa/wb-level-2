@@ -110,6 +110,7 @@ func parseData(filePath string) ([]string, error) {
 	for scanner.Scan() {
 		data = append(data, scanner.Text())
 	}
+
 	return data, nil
 }
 
