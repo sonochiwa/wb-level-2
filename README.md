@@ -19,7 +19,7 @@
 ✅ Утилита cut  
 ✅ Or channel  
 ✅ Взаимодействие с ОС  
-❌ Утилита wget  
+✅ Утилита wget  
 ❌ Утилита telnet  
 ❌ HTTP server
 
