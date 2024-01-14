@@ -221,6 +221,7 @@ func countStrings(indexes map[int]bool) int {
 			count++
 		}
 	}
+
 	return count
 }
 
