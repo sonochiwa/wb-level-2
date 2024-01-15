@@ -21,7 +21,7 @@
 ✅ Взаимодействие с ОС  
 ✅ Утилита wget  
 ✅ Утилита telnet  
-❌ HTTP server
+✅ HTTP server
 
 ## Listing [0/7]
 
