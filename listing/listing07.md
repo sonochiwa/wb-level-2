@@ -41,8 +41,8 @@ func merge(a, b <-chan int) <-chan int {
 func main() {
 
 	a := asChan(1, 3, 5, 7)
-	b := asChan(2, 4 ,6, 8)
-	c := merge(a, b )
+	b := asChan(2, 4, 6, 8)
+	c := merge(a, b)
 	for v := range c {
 		fmt.Println(v)
 	}
@@ -50,7 +50,8 @@ func main() {
 ```
 
 Ответ:
-```
-...
 
+```
+Сначала выведем значения из каналов, потом будем спамить zero value из цикла в функции main,
+т.к. цикл for range по каналу <-chan int "с" бесконечный и не получает сигнал о завершении
 ```
