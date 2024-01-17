@@ -14,7 +14,7 @@ import "fmt"
 Специализируется на пошаговом построении объекта
 
 Реализация может выглядеть как пайплайн методов для создания сложного объекта.
-Если описать кратко, то билдер это пайплайн из сеттеров где последний шаг создает объект ( .Build() )
+Если описать кратко, то билдер это пайплайн из сеттеров, где последний шаг создает объект ( .Build() )
 
 УЧАСТНИКИ
 
@@ -23,7 +23,7 @@ Builder - строитель:
 
 ConcreteBuilder - конкретный строитель:
 - конструирует и собирает вместе части продукта посредством реализации интерфейса Builder
-- предоставляет интерфейс для доступа к продукту
+- предоставляет интерфейс для доступа к продукту (в контексте го - структура)
 
 Director - распорядитель:
 - конструирует объект, пользуясь интерфейсом Builder
@@ -52,55 +52,70 @@ Product - продукт:
 Строитель возвращает продукт на последнем шаге, а абстрактная фабрика немедленно
 */
 
-type ComputerBuilderI interface {
-	CPU(val string) ComputerBuilderI
-	RAM(val int) ComputerBuilderI
-	MB(val string) ComputerBuilderI
+// Builder - интерфейс строителя, определяющий шаги создания продукта
+type Builder interface {
+	BuildName(value string) Builder
+	BuildPrice(value int) Builder
 
-	Build() Computer
+	GetProduct() Product
 }
 
-type Computer struct {
-	CPU string
-	RAM int
-	MB  string
+// Product - объект который мы строим
+type Product struct {
+	Name  string
+	Price int
 }
 
-type computerBuilder struct {
-	cpu string
-	ram int
-	mb  string
+// ConcreteBuilder - конкретный строитель
+type ConcreteBuilder struct {
+	product Product
 }
 
-func (b *computerBuilder) CPU(val string) ComputerBuilderI {
-	b.cpu = val
+// Director - управляет процессом конструирования
+type Director struct {
+	builder Builder
+}
+
+func (b *ConcreteBuilder) BuildName(value string) Builder {
+	b.product.Name = value
 	return b
 }
 
-func (b *computerBuilder) RAM(val int) ComputerBuilderI {
-	b.ram = val
+func (b *ConcreteBuilder) BuildPrice(value int) Builder {
+	b.product.Price = value
 	return b
 }
 
-func (b *computerBuilder) MB(val string) ComputerBuilderI {
-	b.mb = val
-	return b
+func (b *ConcreteBuilder) GetProduct() Product {
+	return b.product
 }
 
-func (b computerBuilder) Build() Computer {
-	return Computer{
-		CPU: b.cpu,
-		RAM: b.ram,
-		MB:  b.mb,
-	}
+func (d *Director) Construct() Product {
+	d.builder.BuildName("Lemon")
+	d.builder.BuildPrice(20)
+
+	return d.builder.GetProduct()
 }
 
-func NewComputerBuilder() ComputerBuilderI {
-	return &computerBuilder{}
+// NewConcreteBuilder - конструктор конкретного билдера
+func NewConcreteBuilder() Builder {
+	return &ConcreteBuilder{}
+}
+
+// NewDirector - конструктор директора
+func NewDirector(builder Builder) *Director {
+	return &Director{builder: builder}
 }
 
 func main() {
-	compBuilder := NewComputerBuilder()
-	computer := compBuilder.CPU("Ryzen 5600x").RAM(16).MB("GigaByte").Build()
-	fmt.Println(computer)
+	// Создаем ConcreteBuilder
+	builder := NewConcreteBuilder()
+
+	// Создаем директора и передаем ему строителя
+	director := NewDirector(builder)
+
+	// Директор управляет процессом конструирования
+	product := director.Construct()
+
+	fmt.Printf("%s, %d\n", product.Name, product.Price)
 }
