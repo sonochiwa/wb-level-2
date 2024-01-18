@@ -89,56 +89,98 @@ Visitor, которую нужно реализовать в каждом из �
 Посетитель добавляет в классы новые операции без их изменения.
 */
 
-// Element - интерфейс элемента
-type Element interface {
-	Accept(visitor Visitor)
+// Shape - элемент
+type Shape interface {
+	accept(Visitor)
 }
 
-// ConcreteElementA - представляет конкретный элемент
-type ConcreteElementA struct {
-	Name string
+// Square - конкретный элемент
+type Square struct {
+	side int
 }
 
-// ConcreteElementB - представляет еще один конкретный элемент
-type ConcreteElementB struct {
-	Value int
+func (s *Square) accept(v Visitor) {
+	v.visitForSquare(s)
 }
 
-// Accept - позволяет посетителю посетить ConcreteElementA
-func (e *ConcreteElementA) Accept(visitor Visitor) {
-	visitor.VisitConcreteElementA(e)
+// Circle - конкретный элемент
+type Circle struct {
+	radius int
 }
 
-// Accept - позволяет посетителю посетить ConcreteElementB
-func (e *ConcreteElementB) Accept(visitor Visitor) {
-	visitor.VisitConcreteElementB(e)
+func (c *Circle) accept(v Visitor) {
+	v.visitForCircle(c)
 }
 
-// Visitor - объявляет метод Visit для каждого типа ConcreteElement
+// Rectangle - конкретный элемент
+type Rectangle struct {
+	l int
+	b int
+}
+
+func (t *Rectangle) accept(v Visitor) {
+	v.visitForRectangle(t)
+}
+
+// Visitor - интерфейс посетителя
 type Visitor interface {
-	VisitConcreteElementA(element *ConcreteElementA)
-	VisitConcreteElementB(element *ConcreteElementB)
+	visitForSquare(*Square)
+	visitForCircle(*Circle)
+	visitForRectangle(*Rectangle)
 }
 
-// ConcreteVisitor - реализует интерфейс Visitor
-type ConcreteVisitor struct{}
-
-// VisitConcreteElementA - реализует операцию посещения для ConcreteElementA
-func (v *ConcreteVisitor) VisitConcreteElementA(element *ConcreteElementA) {
-	fmt.Printf("Посетитель посещает ConcreteElementA с именем: %s\n", element.Name)
+// AreaCalculator - конкретный посетитель, который реализует интерфейс посетителя
+type AreaCalculator struct {
+	area int
 }
 
-// VisitConcreteElementB - реализует операцию посещения для ConcreteElementB
-func (v *ConcreteVisitor) VisitConcreteElementB(element *ConcreteElementB) {
-	fmt.Printf("Посетитель посещает ConcreteElementB со значением: %d\n", element.Value)
+func (a *AreaCalculator) visitForSquare(s *Square) {
+	// Calculate area for square.
+	// Then assign in to the area instance variable.
+
+	fmt.Println("Calculating area for square")
 }
 
+func (a *AreaCalculator) visitForCircle(s *Circle) {
+	fmt.Println("Calculating area for circle")
+}
+
+func (a *AreaCalculator) visitForRectangle(s *Rectangle) {
+	fmt.Println("Calculating area for rectangle")
+}
+
+// MiddleCoordinates - конкретный посетитель, который реализует интерфейс посетителя
+type MiddleCoordinates struct {
+	x int
+	y int
+}
+
+func (a *MiddleCoordinates) visitForSquare(s *Square) {
+	// Calculate middle point coordinates for square.
+	// Then assign in to the x and y instance variable.
+	fmt.Println("Calculating middle point coordinates for square")
+}
+
+func (a *MiddleCoordinates) visitForCircle(c *Circle) {
+	fmt.Println("Calculating middle point coordinates for circle")
+}
+func (a *MiddleCoordinates) visitForRectangle(t *Rectangle) {
+	fmt.Println("Calculating middle point coordinates for rectangle")
+}
 func main() {
-	visitor := &ConcreteVisitor{}
+	square := &Square{side: 2}
+	circle := &Circle{radius: 3}
+	rectangle := &Rectangle{l: 2, b: 3}
 
-	elementA := &ConcreteElementA{Name: "TheVisitorName"}
-	elementA.Accept(visitor)
+	areaCalculator := &AreaCalculator{}
 
-	elementB := &ConcreteElementB{Value: 777}
-	elementB.Accept(visitor)
+	square.accept(areaCalculator)
+	circle.accept(areaCalculator)
+	rectangle.accept(areaCalculator)
+
+	fmt.Println()
+	middleCoordinates := &MiddleCoordinates{}
+	square.accept(middleCoordinates)
+	circle.accept(middleCoordinates)
+	rectangle.accept(middleCoordinates)
 }
